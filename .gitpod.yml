@@ -4,3 +4,7 @@ image:
 tasks:
   - name: Setup git
     command: ~/gitconfig-provider apply
+
+ports:
+  - port: 5000
+    onOpen: open-browser
