@@ -4,5 +4,4 @@ import "taskConnector/cmd"
 
 func main() {
 	cmd.RootCmd.Execute()
-	StartServer()
 }

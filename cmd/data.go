@@ -5,11 +5,10 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"path/filepath"
-
-	"github.com/mitchellh/go-homedir"
+	"os/exec"
 )
 
+var commandFile string
 var commandMapping map[string]string
 
 func init() {
@@ -17,9 +16,17 @@ func init() {
 		readCommandMapping()
 	}
 }
+func SetcommandFile(commandFilePath string) {
+	fmt.Println(commandFile)
+	commandFile = commandFilePath
+	if len(commandMapping) == 0 {
+		readCommandMapping()
+	}
+}
 
 func readCommandMapping() {
 	data, _ := readConfigFile()
+	fmt.Println(data)
 	if len(data) > 0 {
 		json.Unmarshal(data, &commandMapping)
 	} else {
@@ -35,8 +42,7 @@ func readConfigFile() ([]byte, error) {
 }
 
 func getConfigFilePath() string {
-	home, _ := homedir.Dir()
-	configFile := filepath.Join(home, "taskConnectorConfig.json")
+	configFile := commandFile
 	return configFile
 }
 
@@ -78,4 +84,18 @@ func AddConfig(key, value string) {
 
 	commandMapping[key] = value
 	writeCommandMapping()
+}
+
+func RunCommand(url string) string {
+
+	command := commandMapping[key]
+	if command == "" {
+		return fmt.Sprintf("Command not found for url %s", url)
+	}
+	output, errorData := exec.Command(command).CombinedOutput()
+	if errorData != nil {
+		return fmt.Sprintf("Error in running command %s, error: %s", command, errorData.Error())
+	}
+	return string(output)
+
 }

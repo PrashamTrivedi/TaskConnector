@@ -1,10 +1,25 @@
-package main
+package cmd
 
 import (
 	"fmt"
 	"net/http"
-	"taskConnector/cmd"
+
+	"github.com/spf13/cobra"
 )
+
+var configFile string
+var startServer = &cobra.Command{
+	Use:   "startServer",
+	Short: "Start Server",
+	Run: func(cmd *cobra.Command, args []string) {
+		
+	},
+}
+
+func init() {
+	addConfigCmd.Flags().StringVarP(&configFile, "configFile", "c", "", "Config File")
+	RootCmd.AddCommand(getConfig)
+}
 
 func StartServer() {
 	mux := defaultMux()
@@ -20,7 +35,7 @@ func defaultMux() *http.ServeMux {
 func hello(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Query().Get("key")
 	if path != "" {
-		output := cmd.RunCommand(path)
+		output := RunCommand(path)
 		fmt.Fprintln(w, output)
 	} else {
 		fmt.Fprint(w, "Hello there")
