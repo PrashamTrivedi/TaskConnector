@@ -7,24 +7,24 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var configFile string
+var port string
 var startServer = &cobra.Command{
 	Use:   "startServer",
 	Short: "Start Server",
 	Run: func(cmd *cobra.Command, args []string) {
-		
+		StartServer()
 	},
 }
 
 func init() {
-	addConfigCmd.Flags().StringVarP(&configFile, "configFile", "c", "", "Config File")
-	RootCmd.AddCommand(getConfig)
+	addConfigCmd.Flags().StringVarP(&port, "port", "p", ":5000", "Port")
+	RootCmd.AddCommand(startServer)
 }
 
 func StartServer() {
 	mux := defaultMux()
-	http.ListenAndServe(":5000", mux)
-	fmt.Println("Starting the server: http://localhost:5000")
+	http.ListenAndServe(port, mux)
+	fmt.Printf("Starting the server: http://localhost:%s", port)
 }
 
 func defaultMux() *http.ServeMux {

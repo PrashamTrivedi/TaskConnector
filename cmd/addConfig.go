@@ -19,7 +19,7 @@ var addConfigCmd = &cobra.Command{
 
 	Run: func(cmd *cobra.Command, args []string) {
 		AddConfig(key, value)
-		fmt.Printf("Key Value pair %s:%s added \n", key, value)
+		fmt.Printf("Key Value pair %s : %s added \n", key, value)
 	},
 }
 
@@ -32,13 +32,4 @@ func init() {
 
 	RootCmd.AddCommand(addConfigCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// addConfigCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// addConfigCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

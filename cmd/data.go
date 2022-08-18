@@ -17,7 +17,6 @@ func init() {
 	}
 }
 func SetcommandFile(commandFilePath string) {
-	fmt.Println(commandFile)
 	commandFile = commandFilePath
 	if len(commandMapping) == 0 {
 		readCommandMapping()
@@ -26,7 +25,7 @@ func SetcommandFile(commandFilePath string) {
 
 func readCommandMapping() {
 	data, _ := readConfigFile()
-	fmt.Println(data)
+
 	if len(data) > 0 {
 		json.Unmarshal(data, &commandMapping)
 	} else {
@@ -88,7 +87,11 @@ func AddConfig(key, value string) {
 
 func RunCommand(url string) string {
 
-	command := commandMapping[key]
+	if len(commandMapping) == 0 {
+		readCommandMapping()
+	}
+
+	command := commandMapping[url]
 	if command == "" {
 		return fmt.Sprintf("Command not found for url %s", url)
 	}
