@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"runtime"
 )
 
 var commandFile string
@@ -85,6 +86,16 @@ func AddConfig(key, value string) {
 	writeCommandMapping()
 }
 
+func getCommandRunners() (string, string) {
+	mainCommand := "bash"
+	commandFlag := "-c"
+	if runtime.GOOS == "windows" {
+		mainCommand = "cmd"
+		commandFlag = "/c"
+	}
+	return mainCommand, commandFlag
+}
+
 func RunCommand(url string) string {
 
 	if len(commandMapping) == 0 {
@@ -95,7 +106,8 @@ func RunCommand(url string) string {
 	if command == "" {
 		return fmt.Sprintf("Command not found for url %s", url)
 	}
-	output, errorData := exec.Command(command).CombinedOutput()
+	mainCommand, commandFlag := getCommandRunners()
+	output, errorData := exec.Command(mainCommand, commandFlag, command).CombinedOutput()
 	if errorData != nil {
 		return fmt.Sprintf("Error in running command %s, error: %s", command, errorData.Error())
 	}
