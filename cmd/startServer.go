@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/spf13/cobra"
@@ -34,6 +35,11 @@ func defaultMux() *http.ServeMux {
 }
 func hello(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Query().Get("key")
+	body, err := ioutil.ReadAll(r.Body)
+    if err != nil {
+        panic(err)
+    }
+    fmt.Println(string(body))
 	if path != "" {
 		output := RunCommand(path)
 		fmt.Fprintln(w, output)
