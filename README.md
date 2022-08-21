@@ -36,7 +36,7 @@ The JSON file expects key value format. Where the key will be your URL and the v
 Start the CLI using `taskConnector startServer` command. By default it will listen to port `5000`, in case this port is busy, or you want it to listen to another port, run `taskConnector startServer -p 80` command. 
 
 In your code, specially in local environment, change the environment variables for your SQS or SNS from 
-`https://sqs.eu-cdef-1.amazonaws.com/ZZZZZZZZZ/sqs-xyz-asdf` to `http://localhost:500?key=https://sqs.eu-cdef-1.amazonaws.com/ZZZZZZZZZ/sqs-xyz-asdf` or `arn:aws:sns:eu-west-1:ZZZZZZZZ:testTopic` to `http://localhost:80?key=arn:aws:sns:eu-west-1:ZZZZZZZZ:testTopic`.
+`https://sqs.eu-cdef-1.amazonaws.com/ZZZZZZZZZ/sqs-xyz-asdf` to `http://localhost:500?key=https://sqs.eu-cdef-1.amazonaws.com/ZZZZZZZZZ/sqs-xyz-asdf` or `arn:aws:sns:eu-cdef-1:ZZZZZZZZ:testTopic` to `http://localhost:80?key=arn:aws:sns:eu-cdef-1:ZZZZZZZZ:testTopic`.
 
 After this when you run the `startServer` command, the CLI will find the command associated with key and will run the command.
 
