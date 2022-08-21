@@ -18,7 +18,7 @@ var startServer = &cobra.Command{
 }
 
 func init() {
-	addConfigCmd.Flags().StringVarP(&port, "port", "p", ":5000", "Port")
+	startServer.Flags().StringVarP(&port, "port", "p", ":5000", "Port")
 	RootCmd.AddCommand(startServer)
 }
 
