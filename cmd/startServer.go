@@ -1,8 +1,8 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/spf13/cobra"
@@ -35,13 +35,27 @@ func defaultMux() *http.ServeMux {
 }
 func hello(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Query().Get("key")
-	body, err := ioutil.ReadAll(r.Body)
-    if err != nil {
-        panic(err)
-    }
-    fmt.Println(string(body))
+
+	headerMapping := r.Header
+	var bodyMapping map[string]string
+	bodyStr := ""
+
+	if err := json.NewDecoder(r.Body).Decode(&bodyMapping); err != nil && err.Error() != "EOF" {
+		fmt.Println("Error in decoding body:", err.Error())
+	}
+
+	body, err := json.Marshal(bodyMapping)
+	if err != nil {
+		fmt.Println("Error in encoding body:", err.Error())
+	}
+	bodyStr = string(body)
+
+	header, err := json.Marshal(headerMapping)
+	if err != nil {
+		fmt.Println("Error in parsing headers:", err.Error())
+	}
 	if path != "" {
-		output := RunCommand(path)
+		output := RunCommand(path, bodyStr, string(header))
 		fmt.Fprintln(w, output)
 	} else {
 		fmt.Fprint(w, "Hello there")

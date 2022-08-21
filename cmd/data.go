@@ -1,12 +1,14 @@
 package cmd
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"runtime"
+	"text/template"
 )
 
 var commandFile string
@@ -96,16 +98,34 @@ func getCommandRunners() (string, string) {
 	return mainCommand, commandFlag
 }
 
-func RunCommand(url string) string {
+func RunCommand(url string, body string, header string) string {
 
 	if len(commandMapping) == 0 {
 		readCommandMapping()
 	}
 
-	command := commandMapping[url]
-	if command == "" {
+	commandTemplateString := commandMapping[url]
+	if commandTemplateString == "" {
 		return fmt.Sprintf("Command not found for url %s", url)
 	}
+	var commandBytes bytes.Buffer
+	commandTemplate, err := template.New(url).Parse(commandTemplateString)
+	if err != nil {
+		return fmt.Sprintf("Error in parsing command %s, error: %s", commandTemplateString, err.Error())
+	}
+
+	commandData := struct {
+		Body   string
+		Header string
+	}{
+		Body: body, Header: header,
+	}
+	if err = commandTemplate.Execute(&commandBytes, commandData); err != nil {
+		return fmt.Sprintf("Error in parsing command %s, error: %s", commandTemplateString, err.Error())
+	}
+
+	command := commandBytes.String()
+
 	mainCommand, commandFlag := getCommandRunners()
 	output, errorData := exec.Command(mainCommand, commandFlag, command).CombinedOutput()
 	if errorData != nil {
